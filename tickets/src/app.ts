@@ -4,7 +4,7 @@ import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
 import { createTicketRouter } from "./routes/new";
 
-import { errorHandler, NotFoundError } from '@mpena/common';
+import { errorHandler, NotFoundError, currentUser } from '@mpena/common';
 
 const app = express();
 app.set('trust proxy', true);
@@ -15,6 +15,9 @@ app.use(
     secure: false
   })
 );
+
+app.use(currentUser);
+
 
 app.use(createTicketRouter);
 
