@@ -4,6 +4,7 @@ import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
 import { createTicketRouter } from "./routes/new";
 import { showTicketRouter } from './routes/show';
+import { indexTicketRouter } from './routes';
 import { errorHandler, NotFoundError, currentUser } from '@mpena/common';
 
 const app = express();
@@ -18,6 +19,7 @@ app.use(
 
 app.use(currentUser);
 
+app.use(indexTicketRouter);
 app.use(showTicketRouter);
 app.use(createTicketRouter);
 
