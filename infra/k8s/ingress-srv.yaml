@@ -21,7 +21,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: client-srv
+                name: tickets-srv
                 port:
                   number: 3000
           - path: /?(.*)
