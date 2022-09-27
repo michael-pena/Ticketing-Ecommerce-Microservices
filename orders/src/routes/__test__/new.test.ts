@@ -2,6 +2,7 @@ import request from "supertest";
 import { app } from "../../app";
 import mongoose from "mongoose";
 import { Order, OrderStatus } from "../../models/order";
+import { natsWrapper } from '../../nats-wrapper';
 import { Ticket } from "../../models/ticket";
 
 it("returns an error if ticket doesnt exist", async () => {
@@ -58,4 +59,23 @@ it("reserves a ticket", async () => {
 
 
 //fetching a user's orders - comeback and write
-it.todo('emits an order created event');
+it('emits an order created event', async () => {
+
+    //create and save ticket
+    const ticket = Ticket.build({
+      title: 'concert',
+      price: 20
+    });
+  
+    await ticket.save();
+  
+    //save order
+    await request(app)
+    .post('/api/orders')
+    .set('Cookie', global.signin())
+    .send({ticketId: ticket.id})
+    .expect(201);
+
+    //look at nats publish function and make sure its invoked
+    expect(natsWrapper.client.publish).toHaveBeenCalled();
+});
