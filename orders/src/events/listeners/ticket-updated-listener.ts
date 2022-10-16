@@ -9,10 +9,8 @@ export class TicketUpdatedListener extends Listener<TicketUpdatedEvent> {
 
    async onMessage(data: TicketUpdatedEvent['data'], msg: Message) {
        //find ticket being updated in 'data' object
-        const ticket = await Ticket.findOne({
-            _id: data.id,
-            version: data.version - 1,
-        });
+        const ticket = await Ticket.findByEvent(data);
+
 
         if (!ticket) {
             throw new Error('Ticket not found');
