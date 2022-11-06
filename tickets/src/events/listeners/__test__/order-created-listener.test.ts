@@ -40,20 +40,34 @@ const setup = async () => {
   return { listener, ticket, data, msg };
 };
 
-it('sets the userId of the ticket', async () => {
-    const { listener, ticket, data, msg } = await setup();
+it("sets the userId of the ticket", async () => {
+  const { listener, ticket, data, msg } = await setup();
 
-    await listener.onMessage(data, msg);
+  await listener.onMessage(data, msg);
 
-    const updatedTicket = await Ticket.findById(ticket.id);
+  const updatedTicket = await Ticket.findById(ticket.id);
 
-    expect(updatedTicket!.orderId).toEqual(data.id);
+  expect(updatedTicket!.orderId).toEqual(data.id);
 });
 
-it('acks the message', async () => {
-    const { listener, ticket, data, msg } = await setup();
+it("acks the message", async () => {
+  const { listener, ticket, data, msg } = await setup();
 
-    await listener.onMessage(data, msg);
+  await listener.onMessage(data, msg);
 
-    expect(msg.ack).toHaveBeenCalled();
+  expect(msg.ack).toHaveBeenCalled();
+});
+
+it("publishes a ticket created event", async () => {
+  const { listener, ticket, data, msg } = await setup();
+
+  await listener.onMessage(data, msg);
+
+  expect(natsWrapper.client.publish).toHaveBeenCalled();
+
+   // as jest.Mock tells TS that this is a mock function
+  const ticketUpdatedData = JSON.parse((natsWrapper.client.publish as jest.Mock).mock.calls[0][1]);
+
+  //get real order id
+  expect(data.id).toEqual(ticketUpdatedData.orderId);
 });
