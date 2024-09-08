@@ -1,4 +1,4 @@
-import { Listener, Subjects, ExpirationCompleteEvent, OrderStatus } from "@mpena/common";
+import { Listener, Subjects, OrderStatus, ExpirationCompleteEvent } from "@mpena/common";
 import { Message } from "node-nats-streaming";
 import { queueGroupName } from './queue-group-name';
 import { Order } from "../../models/order";
